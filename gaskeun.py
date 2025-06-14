@@ -1770,14 +1770,13 @@ if __name__ == '__main__':
             elif bdr == "stop":
                 stop()
                 usge()
-            else:= "help":
-                main()sge()
-        except IndexError:ys.argv) <= int(7):
+            else:
+                main()
+        except IndexError:
             usge()
     except KeyboardInterrupt:
         sys.exit()
-    except IndexError:exError:
+    except IndexError:
         usge()
-boardInterrupt:
+    except KeyboardInterrupt:
         usge()
-
