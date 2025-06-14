@@ -717,7 +717,6 @@ def cfb(event, socks_type):
             if protocol == "https":
                 ctx = ssl.SSLContext()
                 s = ctx.wrap_socket(s, server_hostname=target)
-            cfscrape.create_scraper(sess=s)
             try:
                 for _ in range(multiple):
                     s.sendall(str.encode(request))
@@ -1691,7 +1690,7 @@ def makefile(text):
     print(f'{lcy}[{green_color}-{lcy}] {white_color}File : {green_color}{text}')
 
 if __name__ == '__main__':
-    import os, requests, socket, socks, time, random, threading, sys, ssl, datetime, cfscrape, re
+    import os, requests, socket, socks, time, random, threading, sys, ssl, datetime, cloudscraper, re
     from time import sleep
     from icmplib import ping as pig
     from scapy.layers.inet import TCP
@@ -1725,8 +1724,8 @@ if __name__ == '__main__':
         "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8Accept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1Accept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1Accept-Charset: utf-8, iso-8859-1;q=0.5",
         "Accept: image/jpeg, application/x-ms-application, image/gif, application/xaml+xml, image/pjpeg, application/x-ms-xbap, application/x-shockwave-flash, application/msword, */*Accept-Language: en-US,en;q=0.5",
         "Accept: text/html, application/xhtml+xml, image/jxr, */*Accept-Encoding: gzipAccept-Charset: utf-8, iso-8859-1;q=0.5Accept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1",
-        "Accept: text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/webp, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1Accept-Encoding: gzipAccept-Language: en-US,en;q=0.5Accept-Charset: utf-8, iso-8859-1;q=0.5,"
-        "Accept: text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8Accept-Language: en-US,en;q=0.5",
+        "Accept: text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/webp, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1Accept-Encoding: gzipAccept-Language: en-US,en;q=0.5Accept-Charset: utf-8, iso-8859-1;q=0.5",
+        "Accept: text/html, application/xhtml+xml, application/xml;q=0.9,*/*;q=0.8Accept-Language: en-US,en;q=0.5",
         "Accept-Charset: utf-8, iso-8859-1;q=0.5Accept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1",
         "Accept: text/html, application/xhtml+xml",
         "Accept-Language: en-US,en;q=0.5",
