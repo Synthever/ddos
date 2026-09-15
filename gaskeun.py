@@ -1422,7 +1422,17 @@ def main():
         exit()
     timer = int(time.time()) + int(sys.argv[7])
     url = str(sys.argv[2]).strip()
-    UrlFixer(url)
+    if str(method.upper()) in l4 or str(method.upper()) in l3:
+        # L4/L3: raw IP:port, no URL scheme
+        if ":" in url:
+            target, port = url.split(":")[0], int(url.split(":")[1])
+        else:
+            target = url
+            port = 80
+        protocol = "raw"
+        path = "/"
+    else:
+        UrlFixer(url)
     choice = str(sys.argv[3]).strip()
     if choice != "4" and choice != "5" and choice != "1":
         print("Socks Type Not Found [4, 5, 1]")
