@@ -472,7 +472,9 @@ def dyn(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 for _ in range(multiple):
@@ -501,7 +503,9 @@ def http(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 for _ in range(multiple):
@@ -529,7 +533,9 @@ def capb(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 for _ in range(multiple):
@@ -557,7 +563,9 @@ def ovh(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 for _ in range(multiple):
@@ -588,7 +596,9 @@ def pps(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 for _ in range(multiple):
@@ -622,7 +632,9 @@ def even(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 for _ in range(multiple):
@@ -656,7 +668,9 @@ def brust(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 for _ in range(multiple):
@@ -689,7 +703,9 @@ def cookie(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 for _ in range(multiple):
@@ -725,7 +741,9 @@ def cfb(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 for _ in range(multiple):
@@ -829,7 +847,9 @@ def head(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 for _ in range(multiple):
@@ -862,7 +882,9 @@ def null(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 for _ in range(multiple):
@@ -895,7 +917,9 @@ def gsb(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 sleep(5)
@@ -943,7 +967,9 @@ def cfbc(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 for _ in range(multiple):
@@ -972,7 +998,9 @@ def post(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 for _ in range(multiple):
@@ -999,7 +1027,9 @@ def stress(event, socks_type):
             s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             try:
                 for _ in range(multiple):
@@ -1050,7 +1080,9 @@ def slow(conn, socks_type):
                 s.set_proxy(socks.HTTP, str(proxy[0]), int(proxy[1]))
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             for _ in range(conn):
                 try:
@@ -1088,7 +1120,9 @@ def checking(lines, socks_type, ms):
             s.settimeout(ms)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext()
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
             s.send(str.encode("GET / HTTP/1.1\r\n\r\n"))
             s.close()
