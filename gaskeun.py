@@ -42,7 +42,12 @@ def start_attack(method, threads, event, socks_type):
     cmethod = str(method.upper())
     if (cmethod != "HIT") and (cmethod not in l4) and (cmethod not in l3) and (cmethod != "OSTRESS"):
         out_file = str("files/proxys/" + sys.argv[5])
-        proxydl(out_file, socks_type)
+        # ponytail: skip re-download if using pre-filtered alive list
+        if os.path.basename(out_file) == "alive.txt" and os.path.exists(out_file):
+            proxies = open(out_file).readlines()
+            print(f"{lcy}[{green_color}-{lcy}] {white_color}Using pre-filtered alive list: {green_color}{len(proxies)}{white_color} proxies")
+        else:
+            proxydl(out_file, socks_type)
         print(f"{lcy}[{green_color}-{lcy}] {green_color}{method} {white_color}Attack Started To {green_color}{target}{white_color}:{green_color}{port} {white_color}For {green_color}{sys.argv[7]} {white_color}Seconds With {green_color}{len(proxies)}{white_color}/{red_color}{str(nums)} {white_color}Proxy ")
     else:
         print(f"{lcy}[{green_color}-{lcy}] {green_color}{method} {white_color}Attack Started To {green_color}{target}{white_color}:{green_color}{port} {white_color}For {green_color}{sys.argv[7]} {white_color}Seconds")

